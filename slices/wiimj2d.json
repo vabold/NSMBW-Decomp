@@ -71,16 +71,6 @@
             }
         },
         {
-            "source": "dol/bases/d_SmallScoreManager.cpp",
-            "memoryRanges": {
-                ".text": "0x106360-0x106af0",
-                ".bss": "0x23800-0x23838",
-                ".data": "0x24478-0x244f8",
-                ".sbss": "0x710-0x718",
-                ".sdata2": "0x2290-0x22d0"
-            }
-        },
-        {
             "source": "dol/bases/d_wipe_dokan.cpp",
             "memoryRanges": {
                 ".text": "0x15410-0x159f0",
@@ -243,6 +233,17 @@
             "memoryRanges": {
                 ".text": "0xf73e0-0xf74c0",
                 ".data": "0x1de58-0x1de68"
+            }
+        },
+        {
+            "source": "dol/bases/d_SmallScoreManager.cpp",
+            "memoryRanges": {
+                ".text": "0x106360-0x106af0",
+                ".ctors": "0x1c0-0x1c4",
+                ".bss": "0x23800-0x23838",
+                ".data": "0x24478-0x244f8",
+                ".sbss": "0x710-0x718",
+                ".sdata2": "0x2290-0x22d0"
             }
         },
         {
