@@ -66,7 +66,7 @@ public:
     int mDispWaitTime; ///< Number of frames to wait in 'DispWait' (unless mPlayerType is 4, in which case the default value is 60)
     int mPlayerType;
     int mChgColorCounter; ///< Counter that is incremented every call to dSmallScore_c::chgColor(), which ensures that the 1-up color is only set once every 10 calls.
-    unsigned int mPlayerColour;
+    unsigned int mPlayerColor;
     int mAnimCounter;
     unsigned int mCurTextbox;
     bool mIsGoalScore;

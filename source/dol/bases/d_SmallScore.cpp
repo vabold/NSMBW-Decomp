@@ -141,7 +141,7 @@ void dSmallScore_c::chgColor() {
     }
     mChgColorCounter = 0;
 
-    int type = mPlayerColour;
+    int type = mPlayerColor;
 
     while (true) {
         if (++type >= 4) {
@@ -155,7 +155,7 @@ void dSmallScore_c::chgColor() {
     }
 
     setPlayer1upColor(type);
-    mPlayerColour = type;
+    mPlayerColor = type;
 }
 
 void dSmallScore_c::setNormalOrBlueColor() {
@@ -220,7 +220,7 @@ void dSmallScore_c::MakeStart() {
     };
 
     int v0 = mPopupType;
-    mPlayerColour = mPlayerType;
+    mPlayerColor = mPlayerType;
     if (v0 >= 21) {
         v0 = 5;
 
