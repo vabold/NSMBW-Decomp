@@ -86,5 +86,4 @@ public:
 
 };
 
-dSmallScore_c * dSmallScore_c::m_instance = nullptr;
 typedef void (dSmallScore_c::*ProcFunc)();
