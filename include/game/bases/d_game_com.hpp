@@ -33,6 +33,7 @@ namespace dGameCom {
     /// @param flag The pause reasons. Value is a ::GAME_STOP_e.
     bool isGameStop(ulong flag);
     void clearGameStop(); ///< Resets the game stop state.
+    void setGameStop();
 
     ////////////////////////
     // Model Lighting API //
