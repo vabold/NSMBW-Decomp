@@ -3,74 +3,22 @@
 #include <game/bases/d_s_stage.hpp>
 #include <game/bases/d_game_com.hpp>
 #include <game/bases/d_info.hpp>
+#include <game/bases/d_a_player_manager.hpp>
+#include <game/bases/d_effactor_mng.hpp>
+#include <game/bases/d_bg.hpp>
+#include <game/bases/d_a_player_base.hpp>
+#include <game/mLib/m_ef.hpp>
 #include <lib/nw4r/g3d/scn_mdl.hpp>
 #include <constants/sjis_constants.h>
 #include <constants/sound_list.h>
-
-class dCdArea_c {
-public:
-    AreaBoundU16 bound;
-};
-
-class dCdUnk_c {
-public:
-    char pad[8];
-    u16 unk;
-};
-
-class dCdFile_c {
-public:
-    char pad[0xc];
-    dCdUnk_c *mpUnk;
-    char pad2[0x1c];
-    dCdArea_c *areas;
-    char pad3[0x380];
-
-    u8 getAreaNo(mVec3_c *);
-    dCdArea_c *getAreaP(u8 zoneID, AreaBound *bound);
-};
-
-class dCd_c {
-public:
-    dCdFile_c courses[4];
-
-    dCdFile_c *getFileP(int i) {
-        dCdFile_c *course = &courses[i];
-        if (course->areas != nullptr) {
-            return course;
-        }
-        return nullptr;
-    }
-
-    static dCd_c *m_instance;
-};
-
+#include <game/bases/d_multi_mng.hpp>
+#include <game/bases/d_score_mng.hpp>
 
 class dAttention_c {
 public:
     void entry(fBaseID_e);
 
     static dAttention_c *mspInstance;
-};
-
-class dBg_c {
-public:
-    void setWaterInWave(float, float, u8);
-
-    char pad[0x8fea0];
-    float loop;
-
-    static dBg_c *m_bg_p;
-};
-
-class mEf {
-public:
-    static void createEffect(const char *, unsigned long, const mVec3_c *, const mAng3_c *, const mVec3_c *);
-};
-
-class asdf {
-public:
-    static float v1, v2, v3, v4;
 };
 
 class DoubleBoundingBox {
@@ -82,10 +30,6 @@ public:
     BoundingBox mDestroyBound;
 };
 
-class daPlBase_c : public dActor_c {
-    char pad[0x10fe];
-};
-
 class daYoshi_c : public daPlBase_c {
 public:
     u8 pad2[0xA0];
@@ -93,35 +37,6 @@ public:
 
     void getMouthMtx(mMtx_c *);
     void getTongueTipMtx(mMtx_c *);
-};
-
-class dAcPy_c : public daPlBase_c {
-public:
-    bool isDrawingCarryFukidashi();
-    void getCcBounds(AreaBound &);
-    void cancelCarry(dActor_c *);
-
-    char pad[0x15e8];
-    fBaseID_e carryActorID;
-};
-
-
-class daPyMng_c {
-public:
-    static void addScore(int, int);
-    static dAcPy_c *getPlayer(int);
-    static u8 mActPlayerInfo;
-    static int mNum;
-
-    static bool checkPlayer(u8 i) { return mActPlayerInfo & (1 << i); }
-};
-
-class dMultiMng_c {
-public:
-    void incEnemyDown(int killedBy);
-    void setClapSE();
-
-    static dMultiMng_c *mspInstance;
 };
 
 struct dfukidashiManager_c_substruct {
@@ -135,23 +50,6 @@ public:
     dfukidashiManager_c_substruct smth[4];
 
     static dfukidashiManager_c *m_instance;
-};
-
-class dScoreMng_c {
-public:
-    void FUN_800e24b0(float, float, dActor_c *, bool);
-    void FUN_800e2190(float, float, dActor_c *, bool, short);
-
-    static dScoreMng_c *m_instance;
-    static float smc_SCORE_X;
-    static float smc_SCORE_Y;
-};
-
-class dEffActorMng_c {
-public:
-    void createWaterSplashEff(mVec3_c &, unsigned long, s8, mVec3_c);
-
-    static dEffActorMng_c *m_instance;
 };
 
 bool dActor_c::mExecStopReq;
@@ -179,7 +77,7 @@ u32 dActor_c::m_relatedCreate3;
 u32 dActor_c::m_relatedCreate4;
 u8 dActor_c::m_relatedCreate5;
 
-dActor_c::dActor_c() : _0(0), mCarryingPlayerNo(-1), _14(0), _18(1.0f) {
+dActor_c::dActor_c() : _0(0), mCarryingPlayerNo(-1), m_13C(0), m_140(1.0f) {
 
     visibleAreaSize.set(0.0f, 0.0f);
     visibleAreaOffset.set(0.0f, 0.0f);
@@ -189,7 +87,7 @@ dActor_c::dActor_c() : _0(0), mCarryingPlayerNo(-1), _14(0), _18(1.0f) {
     _224 = nullptr;
     _228 = nullptr;
     eaterActorID = 0;
-    _245 = 2;
+    mEatSpitType = 2;
     _258 = 0;
 
     mPlayerNo = -1;
@@ -291,7 +189,7 @@ int dActor_c::preDraw() {
     if (dBaseActor_c::preDraw() == NOT_READY || (mDrawStop & getKindMask()) != 0) {
         return NOT_READY;
     }
-    if (mNoDrawIf2 == 2) {
+    if (mEatState == 2) {
         return NOT_READY;
     }
     if ((mActorProperties & 2) != 0 && ActorDrawCullCheck() != 0) {
@@ -369,7 +267,7 @@ dAcPy_c *dActor_c::searchNearPlayerNormal(mVec2_c &delta, const mVec2_c &selfPos
 dAcPy_c *dActor_c::searchNearPlayerLoop(mVec2_c &delta, const mVec2_c &selfPos) {
     dAcPy_c *closestPlayer = nullptr;
 
-    float bgSmth = dBg_c::m_bg_p->loop;
+    float bgSmth = dBg_c::m_bg_p->mLoopOffset;
 
     mVec2_c loopSelfPos;
     loopSelfPos.x = dScStage_c::getLoopPosX(selfPos.x);
@@ -431,7 +329,7 @@ bool dActor_c::getTrgToSrcDirLoop(float f1, float f2) {
     float loopPos1 = dScStage_c::getLoopPosX(f1);
     float loopPos2 = dScStage_c::getLoopPosX(f2);
     float diff = loopPos1 - loopPos2;
-    float bgLoop = dBg_c::m_bg_p->loop / 2;
+    float bgLoop = dBg_c::m_bg_p->mLoopOffset / 2;
     if (diff < 0.0f) {
         return !(diff < -bgLoop);
     } else {
@@ -553,7 +451,7 @@ bool dActor_c::cullCheck_(const mVec3_c &pos, const AreaBound &bound, u8 areaID)
 }
 
 bool dActor_c::ActorScrOutCheck(u16 someBitfield) {
-    if (mNoDrawIf2 == 2) {
+    if (mEatState == 2) {
         return false;
     }
     if ((someBitfield & 8) == 0 && mBc.checkRide()) {
@@ -856,7 +754,7 @@ void dActor_c::clrComboCnt() {
 void dActor_c::waterSplashEffect(const mVec3_c &pos, float param_2) {
     mVec3_c shiftedPos(pos, 6500.0f);
 
-    int waterDepth = dBc_c::checkWaterDepth(shiftedPos.x, shiftedPos.y, mLayer, mBc._e5, nullptr);
+    int waterDepth = dBc_c::checkWaterDepth(shiftedPos.x, shiftedPos.y, mLayer, mBc.mNonCollideMask, nullptr);
 
     u32 idk = 0;
     if (waterDepth < 3) {

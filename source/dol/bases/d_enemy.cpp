@@ -228,7 +228,7 @@ void dEn_c::normal_collcheck(dCc_c *cc1, dCc_c *cc2) {
     } else if (kind == 1) {
         if (o1->mFlags & 0x1000000 || !CeilCheck(o1->mPos.y, cc1)) {
             if (o1->PlDamageCheck(cc1, cc2)) {
-                o1->mCcValue = cc1->unk3;
+                o1->mCcValue = cc1->mCanBounce;
                 cc1->mFlag |= 2;
             } else if (cc2->mCcData.mCategory != dCc_c::CAT_PLAYER_ATTACK) {
                 s8 *plrNo = o2->getPlrNo();
@@ -249,7 +249,7 @@ void dEn_c::normal_collcheck(dCc_c *cc1, dCc_c *cc2) {
             } else {
                 if (!CeilCheck(o1->mPos.y, cc1)) {
                     if (o1->YoshiDamageCheck(cc1, cc2)) {
-                        o1->mCcValue = cc1->unk3;
+                        o1->mCcValue = cc1->mCanBounce;
                         cc1->mFlag |= 2;
                     } else if (o1->mCounterCont.mCounters2[*plrNo] == 0) {
                         o1->mCounterCont.mCounters2[*plrNo] = 5;
@@ -260,7 +260,7 @@ void dEn_c::normal_collcheck(dCc_c *cc1, dCc_c *cc2) {
         }
     } else {
         if (o1->EtcDamageCheck(cc1, cc2)) {
-            o1->mCcValue = cc1->unk3;
+            o1->mCcValue = cc1->mCanBounce;
             cc1->mFlag |= 2;
         }
     }
@@ -417,7 +417,7 @@ bool dEn_c::carry_check(dActor_c *actor) {
 }
 
 void dEn_c::checkWallAndBg() {
-    float v = l_base_speedX[mIsFacingLeft];
+    float v = l_base_speedX[mDirection];
     mBc.checkWall(&v);
     mVec3_c truePos = mPos;
     truePos += mCenterOffs;
@@ -919,9 +919,9 @@ mVec3_c dEn_c::calcCarryPos(const mVec3_c &pos) {
 }
 
 bool dEn_c::turnangle_calc(const short *ang1, const short *ang2) {
-    mAngle.y += ang2[mIsFacingLeft];
+    mAngle.y += ang2[mDirection];
     if (ang1[0] <= mAngle.y || mAngle.y <= ang1[1]) {
-        mAngle.y = ang1[mIsFacingLeft];
+        mAngle.y = ang1[mDirection];
         return true;
     }
     return false;
@@ -954,7 +954,7 @@ bool dEn_c::setEatSpitOut(dActor_c *actor) {
     calcSpitOutPos(actor);
     int plrNo = *actor->getPlrNo();
     mCounterCont.mCounters2[plrNo] = 16;
-    mIsFacingLeft = actor->mIsFacingLeft;
+    mDirection = actor->mDirection;
     reviveCc();
     setAfterEatScale();
     changeState(StateID_EatOut);

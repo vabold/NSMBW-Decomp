@@ -79,6 +79,44 @@ struct AreaBoundU16 {
     u16 x, y, width, height;
 };
 
+class dCdArea_c {
+public:
+    AreaBoundU16 bound;
+};
+
+class dCdUnk_c {
+public:
+    char pad[8];
+    u16 unk;
+};
+
+class dCdFile_c {
+public:
+    char pad[0xc];
+    dCdUnk_c *mpUnk;
+    char pad2[0x1c];
+    dCdArea_c *areas;
+    char pad3[0x380];
+
+    u8 getAreaNo(mVec3_c *);
+    dCdArea_c *getAreaP(u8 zoneID, AreaBound *bound);
+};
+
+class dCd_c {
+public:
+    dCdFile_c courses[4];
+
+    dCdFile_c *getFileP(int i) {
+        dCdFile_c *course = &courses[i];
+        if (course->areas != nullptr) {
+            return course;
+        }
+        return nullptr;
+    }
+
+    static dCd_c *m_instance;
+};
+
 class dAcPy_c;
 
 class dActor_c : public dBaseActor_c {
@@ -147,7 +185,8 @@ public:
 
     static bool otherCullCheck(const mVec3_c &pos, const AreaBound &bound, BoundingBox bound2, u8 areaID);
 
-    // @note Unofficial name.
+    /// @note Unofficial name.
+    /// @unofficial
     bool checkBgColl();
 
     bool carryFukidashiCheck(int param_2, mVec2_c param_3);
@@ -192,15 +231,22 @@ public:
     typedef dAcPy_c *(*searchNearPlayerFunc)(mVec2_c &, const mVec2_c &);
     typedef bool (*getTrgToSrcDirFunc)(float, float);
 
+    enum ActorDirection {
+        DIR_RIGHT,
+        DIR_LEFT,
+        DIR_UP,
+        DIR_DOWN,
+    };
+
     u8 _0;
     u32 mCarryingPlayerNo;
     u32 carryingFlags;
     u32 carryingDirection;
     u32 mComboCount;
-    u8 _10;
-    u32 _14;
-    float _18;
-    u32 _1c;
+    u8 m_138;
+    u32 m_13C;
+    float m_140;
+    u32 m_144;
 
     dCc_c mCc;
     dBc_c mBc;
@@ -218,7 +264,7 @@ public:
     // BoundingBox mMaxBound;
     BoundingBox mDestroyBound;
     // DoubleBoundingBox bounds;
-    bool mIsFacingLeft;
+    u8 mDirection; // ActorDirection
     u8 mAreaNo;
     u8 mBgCollFlags;
 
@@ -234,8 +280,8 @@ public:
     u8 _23e;
 
     u32 eaterActorID;
-    u8 mNoDrawIf2;
-    u8 _245;
+    u8 mEatState; ///< 0=normal 2=eaten 4=spit out
+    u8 mEatSpitType; ///< 4=fire 5=ice
     mVec3_c mPreEatScale;
 
     int _254;
