@@ -519,7 +519,7 @@ void dActor_c::deleteActor(u8 param_1) {
     }
 }
 
-bool dActor_c::cullCheck(const mVec3_c &pos, const AreaBound &bound, u8 areaID) const {
+bool dActor_c::cullCheck_(const mVec3_c &pos, const AreaBound &bound, u8 areaID) const {
     dCdFile_c *course = dCd_c::m_instance->getFileP(dScStage_c::m_instance->currCourse);
     dCdArea_c *area = course->getAreaP(areaID, nullptr);
     if (area == nullptr) {
@@ -567,7 +567,7 @@ bool dActor_c::ActorScrOutCheck(u16 someBitfield) {
     bound.height = visibleAreaSize.y * 0.5f;
 
     bool res = false;
-    if (cullCheck(mPos, bound, mAreaNo)) {
+    if (cullCheck_(mPos, bound, mAreaNo)) {
         res = true;
     } else if ((someBitfield & 4) == 0) {
         if (otherCullCheck(mPos, bound, getDestroyBound(), mAreaNo)) {

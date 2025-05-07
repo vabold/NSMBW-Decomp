@@ -140,7 +140,8 @@ public:
     void deleteActor(u8);
 
     /// @note Unofficial name.
-    bool cullCheck(const mVec3_c &pos, const AreaBound &bound, u8 areaID) const;
+    /// @unofficial
+    bool cullCheck_(const mVec3_c &pos, const AreaBound &bound, u8 areaID) const;
 
     bool ActorScrOutCheck(u16);
 
