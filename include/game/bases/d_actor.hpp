@@ -183,7 +183,7 @@ public:
 
     bool ActorScrOutCheck(u16);
 
-    static bool otherCullCheck(const mVec3_c &pos, const AreaBound &bound, BoundingBox bound2, u8 areaID);
+    static bool otherCullCheck(const mVec3_c &pos, const float *bound, BoundingBox bound2, u8 areaID);
 
     /// @note Unofficial name.
     /// @unofficial

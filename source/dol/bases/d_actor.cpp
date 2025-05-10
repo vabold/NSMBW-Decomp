@@ -458,14 +458,14 @@ bool dActor_c::ActorScrOutCheck(u16 someBitfield) {
         return false;
     }
 
-    AreaBound bound;
-    bound.x = visibleAreaOffset.x;
-    bound.y = visibleAreaOffset.y;
-    bound.width = visibleAreaSize.x * 0.5f;
-    bound.height = visibleAreaSize.y * 0.5f;
+    float bound[4];
+    bound[0] = visibleAreaOffset.x;
+    bound[1] = visibleAreaOffset.y;
+    bound[2] = visibleAreaSize.x * 0.5f;
+    bound[3] = visibleAreaSize.y * 0.5f;
 
     bool res = false;
-    if (cullCheck_(mPos, bound, mAreaNo)) {
+    if (cullCheck_(mPos, (const AreaBound &) bound, mAreaNo)) {
         res = true;
     } else if ((someBitfield & 4) == 0) {
         if (otherCullCheck(mPos, bound, getDestroyBound(), mAreaNo)) {

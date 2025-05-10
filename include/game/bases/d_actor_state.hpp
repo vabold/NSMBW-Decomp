@@ -16,6 +16,10 @@ public:
         mStateMgr.finalizeState();
         mStateMgr.getOldStateID();
     }
+
+    bool isState(const sStateIDIf_c &state) const {
+        return *mStateMgr.getStateID() == state;
+    }
 };
 
 class dActorMultiState_c : public dActor_c {
