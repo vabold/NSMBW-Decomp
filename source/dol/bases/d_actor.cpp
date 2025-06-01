@@ -227,7 +227,7 @@ dAcPy_c *dActor_c::searchNearPlayerNormal(mVec2_c &delta, const mVec2_c &selfPos
 dAcPy_c *dActor_c::searchNearPlayerLoop(mVec2_c &delta, const mVec2_c &selfPos) {
     dAcPy_c *closestPlayer = nullptr;
 
-    float loopOffset = dBg_c::m_bg_p->mLoopOffset;
+    float loopOffset = dBg_c::m_bg_p->mLoopOffsetX;
 
     mVec2_c loopSelfPos;
     loopSelfPos.x = dScStage_c::getLoopPosX(selfPos.x);
@@ -293,7 +293,7 @@ bool dActor_c::getTrgToSrcDirLoop(float x1, float x2) {
     float adjX2 = dScStage_c::getLoopPosX(x2);
     float diffX = adjX1 - adjX2;
 
-    float loopOffset = dBg_c::m_bg_p->mLoopOffset / 2;
+    float loopOffset = dBg_c::m_bg_p->mLoopOffsetX / 2;
     if (diffX < 0.0f) {
         return !(diffX < -loopOffset);
     } else {
@@ -384,7 +384,7 @@ void dActor_c::deleteActor(u8 param_1) {
 
 bool dActor_c::cullCheck(const mVec3_c &pos, const mBoundBox &bound, u8 areaID) const {
     dCdFile_c *course = dCd_c::m_instance->getFileP(dScStage_c::m_instance->mCurrCourse);
-    AreaBoundU16 *area = course->getAreaP(areaID, nullptr);
+    dCdArea_c *area = course->getAreaP(areaID, nullptr);
     if (area == nullptr) {
         return true;
     }
@@ -394,8 +394,8 @@ bool dActor_c::cullCheck(const mVec3_c &pos, const mBoundBox &bound, u8 areaID) 
     mVec2_c bt = bound.withPos(pos);
     b.set(bt.x, bt.y);
 
-    b.x -= area->x;
-    b.y += area->y;
+    b.x -= area->bound.x;
+    b.y += area->bound.y;
 
     mVec2_c doubleBoundSize = bound.getSize();
     doubleBoundSize.x = 2.0f * doubleBoundSize.x;
@@ -404,11 +404,11 @@ bool dActor_c::cullCheck(const mVec3_c &pos, const mBoundBox &bound, u8 areaID) 
     mVec2_c maxBoundSize = mMaxBound.getSize();
 
     if ((course->mpUnk->mFlags & 1) == 0) {
-        if (b.x + doubleBoundSize.x < -maxBoundSize.x || b.x > area->width + maxBoundSize.x) {
+        if (b.x + doubleBoundSize.x < -maxBoundSize.x || b.x > area->bound.width + maxBoundSize.x) {
             return true;
         }
     }
-    if (b.y - doubleBoundSize.y > maxBoundSize.y || b.y < -(area->height + maxBoundSize.y)) {
+    if (b.y - doubleBoundSize.y > maxBoundSize.y || b.y < -(area->bound.height + maxBoundSize.y)) {
         return true;
     }
 

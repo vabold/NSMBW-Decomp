@@ -4,8 +4,12 @@
 
 class dScStage_c : public dScene_c {
 public:
-    char pad[0x119a];
+    char pad[0x1198];
+    u8 m_120c;
+    u8 m_120d;
     u8 mCurrCourse;
+    u8 mCurrArea;
+    u8 mCurrWorld;
 
     static float getLoopPosX(float x);
     static int m_loopType;
