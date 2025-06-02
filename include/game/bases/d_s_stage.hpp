@@ -4,8 +4,10 @@
 
 class dScStage_c : public dScene_c {
 public:
-    char pad[0x119a];
-    u8 mCurrCourse;
+    char pad[0x1198];
+    u8 mCurrWorld;
+    u8 mCurrLevel;
+    u8 mCurrFile;
     u8 mCurrAreaNo;
     u8 mCurrLayer;
 

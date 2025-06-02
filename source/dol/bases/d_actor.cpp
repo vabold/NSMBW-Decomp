@@ -63,7 +63,7 @@ dActor_c::dActor_c() :
     setDefaultMaxBound();
     mDestroyBound = mBoundBox(256.0f, 256.0f, 80.0f, 80.0f);
 
-    dCdFile_c *file = dCd_c::m_instance->getFileP(dScStage_c::m_instance->mCurrCourse);
+    dCdFile_c *file = dCd_c::m_instance->getFileP(dScStage_c::m_instance->mCurrFile);
     mAreaNo = file->getAreaNo(&mPos);
 
     mBc.mpRc = &mRc;
@@ -383,7 +383,7 @@ void dActor_c::deleteActor(u8 param_1) {
 }
 
 bool dActor_c::cullCheck(const mVec3_c &pos, const mBoundBox &bound, u8 areaID) const {
-    dCdFile_c *course = dCd_c::m_instance->getFileP(dScStage_c::m_instance->mCurrCourse);
+    dCdFile_c *course = dCd_c::m_instance->getFileP(dScStage_c::m_instance->mCurrFile);
     AreaBoundU16 *area = course->getAreaP(areaID, nullptr);
     if (area == nullptr) {
         return true;
