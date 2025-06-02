@@ -140,7 +140,7 @@ public:
     mVec2_c mVisibleAreaOffset;
     mBoundBox mMaxBound;
     mBoundBox mDestroyBound;
-    bool mDirection;
+    u8 mDirection;
     u8 mAreaNo;
     u8 mBgCollFlags; // &1 = head, &2 = wallL, &4 = wallR, &8 = foot
 
