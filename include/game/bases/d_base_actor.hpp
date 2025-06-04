@@ -111,6 +111,8 @@ public:
     // Getters / setters
     float getAccelF() const { return mAccelF; }
     void setAccelF(float accelF) { mAccelF = accelF; }
+    float absSpeedF() { return fabs(mSpeedF); }
+    float absMaxSpeedF() { return fabs(mMaxSpeedF); }
 
 private:
     /**
