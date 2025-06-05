@@ -17,7 +17,7 @@
 #include <constants/sjis_constants.h>
 #include <constants/sound_list.h>
 
-bool dActor_c::mExecStopReq;
+u8 dActor_c::mExecStopReq;
 bool dActor_c::mDrawStopReq;
 bool dActor_c::mExecStop;
 bool dActor_c::mDrawStop;

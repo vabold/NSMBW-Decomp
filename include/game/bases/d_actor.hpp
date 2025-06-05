@@ -187,7 +187,7 @@ public:
     static const float smc_CULL_AREA_YLIMIT;
     static const mVec2_c smc_FUKIDASHI_RANGE;
 
-    static bool mExecStopReq;
+    static u8 mExecStopReq;
     static bool mDrawStopReq;
     static bool mExecStop;
     static bool mDrawStop;
