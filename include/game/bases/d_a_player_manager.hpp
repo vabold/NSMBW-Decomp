@@ -5,9 +5,12 @@
 class daPyMng_c {
 public:
     static dAcPy_c *getPlayer(int);
+    static dAcPy_c *getCtrlPlayer(int);
     static daYoshi_c *getYoshi(int);
     static void addScore(int, int);
     static void setHipAttackQuake(int, u8);
+    static int getNumInGame();
+    static int getItemKinopioNum();
 
     /// @unofficial
     static bool checkPlayer(u8 plrNo) { return mActPlayerInfo & (1 << plrNo); }

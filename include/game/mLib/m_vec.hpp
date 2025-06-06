@@ -181,6 +181,8 @@ public:
     /// @brief Inequality operator.
     bool operator!=(const mVec3_c &v) const { return x != v.x || y != v.y || z != v.z; }
 
+    bool lt1() const { return PSVECMag((const Vec *) this) <= 1.0f; }
+
     /// @brief Normalizes the vector.
     /// @return The vector's magnitude.
     float normalize();
