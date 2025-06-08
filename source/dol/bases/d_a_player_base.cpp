@@ -244,11 +244,11 @@ short daPlBase_c::getMukiAngle(u8 direction) {
 }
 
 int daPlBase_c::turnAngle() {
-    return sLib::chase(&mAngle.y, getMukiAngle(mDirection), 0x2000);
+    return mAngle.y.chase(getMukiAngle(mDirection), 0x2000);
 }
 
 int daPlBase_c::addCalcAngleY(short p1, short p2) {
-    return sLib::addCalcAngle(&mAngle.y, p1, p2, 0x2000, 0x400);
+    return sLib::addCalcAngle(&mAngle.y.mAngle, p1, p2, 0x2000, 0x400);
 }
 
 short daPlBase_c::getBesideMukiAngle(u8 direction) {
@@ -257,7 +257,7 @@ short daPlBase_c::getBesideMukiAngle(u8 direction) {
 }
 
 void daPlBase_c::turnBesideAngle() {
-    sLib::chase(&mAngle.y, getBesideMukiAngle(mDirection), 0x2000);
+    mAngle.y.chase(getBesideMukiAngle(mDirection), 0x2000);
 }
 
 bool daPlBase_c::checkRideActor(daPlBase_c *other) {
@@ -523,12 +523,11 @@ void daPlBase_c::executeState_Slip() {
     moveSpeedSet();
     powerSet();
     sLib::calcTimer(&m_fc);
-    short ang = 0;
+    mAng ang = 0;
     if (m_d40 & 1) {
-        ang = mBc.getSakaAngle(mDirection);
-        ang = (short) (ang * 0.3f);
+        ang = mBc.getSakaAngle(mDirection)* 0.3f;
     }
-    sLib::addCalcAngle(&mAngle.x, ang, 4, 0x2000, 0x100);
+    sLib::addCalcAngle(&mAngle.x.mAngle, ang.mAngle, 4, 0x2000, 0x100);
     int angle = turnAngle();
     if (m_d44 & 8) {
         m_fc = 9;
@@ -614,13 +613,13 @@ void daPlBase_c::slipActionMove(int param) {
             setCcAtPenguinSlip();
         }
     }
-    if (m_d48 & 1 && m_d96 > 0 && m_d98 * m_d9a <= 0) {
+    if (m_d48 & 1 && m_d96.mAngle > 0 && (m_d98 * m_d9a).mAngle <= 0) {
         m_d40 &= ~1;
         float baseSpeed = mSpeedF;
-        float cos = nw4r::math::CosS(m_d96);
+        float cos = m_d96.cos();
         mMaxSpeedF = baseSpeed;
         mSpeedF = baseSpeed * cos;
-        mSpeed.y = fabsf(baseSpeed) * nw4r::math::SinS(m_d96);
+        mSpeed.y = fabsf(baseSpeed) * m_d96.sin();
     }
     if (m_d40 & 1) {
         if (mSpeedF <= 0.0f && m_d40 & 0x80000) {
@@ -1424,7 +1423,7 @@ void daPlBase_c::DemoAnmBossAttention() {
             mSubstate++;
             break;
         case HIP_ACTION_ATTACK_START:
-            if (sLib::chase(&mAngle.y, getMukiAngle(mDirection), 0x800)) {
+            if (mAngle.y.chase(getMukiAngle(mDirection), 0x800)) {
                 mSubstate++;
                 offStatus(STATUS_03);
             }
@@ -2895,7 +2894,7 @@ void daPlBase_c::executeDemoInDokan(u8 dir) {
             break;
         case DEMO_IN_DOKAN_ACTION_3:
             if (!mKey.buttonWalk(nullptr)) {
-                if (!sLib::chase(&mAngle.y, getMukiAngle(mDirection), scDokanOutTurnSpeed[0])) {
+                if (!mAngle.y.chase(getMukiAngle(mDirection), scDokanOutTurnSpeed[0])) {
                     break;
                 }
             }
@@ -3164,11 +3163,11 @@ void daPlBase_c::executeDemoOutDokanUD() {
         case DEMO_IN_DOKAN_ACTION_0: {
             int cond = 0;
             if (mKind == 2) {
-                if (sLib::chase(&mAngle.y, 0, scDokanOutTurnSpeed[0])) {
+                if (mAngle.y.chase(0, scDokanOutTurnSpeed[0])) {
                     cond = 1;
                 }
             } else {
-                if (sLib::chase(&mAngle.y, getMukiAngle(mDirection), 0x2000)) {
+                if (mAngle.y.chase(getMukiAngle(mDirection), 0x2000)) {
                     cond = 1;
                 }
             }
@@ -3325,11 +3324,11 @@ void daPlBase_c::executeState_DemoOutDokanRoll() {
         case DEMO_IN_DOKAN_ACTION_0: {
             int cond = 0;
             if (mKind == 2) {
-                if (sLib::chase(&mAngle.y, 0, scDokanOutTurnSpeed[0])) {
+                if (mAngle.y.chase(0, scDokanOutTurnSpeed[0])) {
                     cond = 1;
                 }
             } else {
-                if (sLib::chase(&mAngle.y, getMukiAngle(mDirection), 0x2000)) {
+                if (mAngle.y.chase(getMukiAngle(mDirection), 0x2000)) {
                     cond = 1;
                 }
             }
@@ -3349,7 +3348,7 @@ void daPlBase_c::executeState_DemoOutDokanRoll() {
             if (mDirection == 1) {
                 v = -v;
             }
-            sLib::addCalcAngle(&mAngle.x, v.mAngle, 4, 0x1000, 0x100);
+            sLib::addCalcAngle(&mAngle.x.mAngle, v.mAngle, 4, 0x1000, 0x100);
             float tmp = m_90 - 32.0f;
             sLib::chase(&m_74.y, tmp, 0.75f);
             mMtx_c m1, m2;
@@ -4949,7 +4948,7 @@ void daPlBase_c::checkBgCross() {
         if (bgFlags & 0x1000000) {
             m_d44 |= 0x10;
         }
-        if (m_d94 > 0 && (m_d40 & 2)) {
+        if (m_d94.mAngle > 0 && (m_d40 & 2)) {
             m_d40 |= 0x2000000;
             mSpeedF = 0.0f;
         }

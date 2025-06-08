@@ -1,3 +1,5 @@
+#pragma once
+
 namespace sLib {
 
 bool chase(short *, short, short);
