@@ -4,6 +4,10 @@
 #include <lib/nw4r/math/trigonometry.hpp>
 #include <lib/rvl/mtx/vec.h>
 
+extern "C" {
+    int abs(int);
+}
+
 /// @brief A one-dimensional short angle vector.
 /// @ingroup mlib
 struct mAng {
@@ -30,6 +34,10 @@ struct mAng {
         return sLib::chase(&mAngle, target.mAngle, step.mAngle);
     }
 
+    mAng abs() const {
+        return mAng(::abs(mAngle));
+    }
+
     /// @brief Augmented addition operator.
     mAng &operator+=(const mAng &v) { mAngle += v.mAngle; return *this; }
 
@@ -52,6 +60,32 @@ struct mAng {
     mAng operator*(mAng f) const {
         return mAng(mAngle * f.mAngle);
     }
+
+    /// @brief Greater than operator.
+    bool operator>(const mAng &v) const {
+        return mAngle > v.mAngle;
+    }
+
+    /// @brief Less than operator.
+    bool operator<(const mAng &v) const {
+        return mAngle < v.mAngle;
+    }
+
+    /// @brief Greater than or equal operator.
+    bool operator>=(const mAng &v) const {
+        return mAngle >= v.mAngle;
+    }
+
+    /// @brief Less than or equal operator.
+    bool operator<=(const mAng &v) const {
+        return mAngle <= v.mAngle;
+    }
+
+    /// @brief Equality operator.
+    bool operator==(s16 v) const { return mAngle == v; }
+
+    /// @brief Inequality operator.
+    bool operator!=(s16 v) const { return mAngle != v; }
 
     /// @brief Equality operator.
     bool operator==(const mAng &v) const { return mAngle == v.mAngle; }
@@ -87,6 +121,9 @@ public:
 
     /// @brief Constructs a new vector from an existing vector from the MTX library.
     mAng3_c(const S16Vec &v) { x = v.x; y = v.y; z = v.z; }
+
+    /// @brief Copy constructor.
+    mAng3_c(const mAng3_c &v) : x(v.x), y(v.y), z(v.z) {}
 
     mAng3_c *operator=(const mAng3_c &v) {
         x = v.x;

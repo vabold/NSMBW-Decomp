@@ -181,6 +181,11 @@ public:
     /// @brief Inequality operator.
     bool operator!=(const mVec3_c &v) const { return x != v.x || y != v.y || z != v.z; }
 
+    /// @brief Returns the length of the vector.
+    float xzLen() const {
+        return EGG::Mathf::sqrt(x * x + z * z);
+    }
+
     bool lt1() const { return PSVECMag((const Vec *) this) <= 1.0f; }
 
     /// @brief Normalizes the vector.

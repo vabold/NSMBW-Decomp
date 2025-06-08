@@ -51,7 +51,7 @@ dActor_c::dActor_c() :
     mpDeleteVal = nullptr;
     mEatenByID = 0;
     mEatSpitType = 2;
-    m_25b = 0;
+    mAttentionMode = 0;
 
     mPlayerNo = -1;
     mNoRespawn = false;

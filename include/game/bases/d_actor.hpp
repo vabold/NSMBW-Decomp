@@ -159,8 +159,8 @@ public:
     mVec3_c mPreEatScale;
 
     YOSHI_POINTS_e mYoshiEatPoints;
-    u32 m_25b;
-    u32 m_25f;
+    int mAttentionMode;
+    u32 mAttentionFlags;
 
     void *mCarryPropelActor;
     u8 mKind;
