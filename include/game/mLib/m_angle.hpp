@@ -16,13 +16,7 @@ struct mAng {
     mAng() {}
 
     /// @brief Constructs a vector from a short value.
-    mAng(s16 x) { mAngle = x; }
-
-    /// @brief Short cast operator.
-    operator s16*() { return &mAngle; }
-
-    /// @brief Const short cast operator.
-    operator const s16*() const { return &mAngle; }
+    mAng(s16 x) : mAngle(x) {}
 
     /// @brief Assignment operator from a short value.
     mAng *operator=(s16 ang) {
@@ -30,8 +24,8 @@ struct mAng {
         return this;
     }
 
-    bool chase(mAng target, mAng step) {
-        return sLib::chase(&mAngle, target.mAngle, step.mAngle);
+    bool chase(short target, short step) {
+        return sLib::chase(&mAngle, target, step);
     }
 
     mAng abs() const {
