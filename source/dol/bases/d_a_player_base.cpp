@@ -5686,7 +5686,7 @@ void daPlBase_c::checkDispOver() {
             dScStage_c::m_instance->mCurrLevel == STAGE_CASTLE &&
             dScStage_c::m_instance->mCurrFile == 0
         ) {
-            adj += 192.0f;
+            adj = dBgParameter_c::ms_Instance_p->yStart() + 192.0f;
         }
         if (mPos.y > adj) {
             mPos.y = adj;
